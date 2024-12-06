@@ -9,25 +9,24 @@ app.use(express.static(path.join(__dirname, 'Meme Coins')));
 
 // Routes
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'Meme Coins', 'index.html'));
 });
 
 app.get('/create', (req, res) => {
-    res.sendFile(path.join(__dirname, 'create.html'));
+    res.sendFile(path.join(__dirname, 'Meme Coins', 'create.html'));
 });
 
-// OAuth Endpoint (example for demo)
-app.get('/auth', (req, res) => {
-    // Redirect to OAuth page or perform authentication logic
-    res.redirect('https://accounts.google.com/o/oauth2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=token&scope=email');
+// OAuth redirect handler (optional, but helps testing)
+app.get('/auth/callback', (req, res) => {
+    res.send('OAuth Callback Received'); // Debugging purposes
 });
 
-// Error handling for undefined routes
+// Catch-all for 404
 app.use((req, res) => {
     res.status(404).send('Page not found');
 });
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
