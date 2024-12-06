@@ -134,7 +134,7 @@
         <p class="description">
             Build your meme coin website quickly and easily with our free and advanced builder. Customize your site with amazing features and stunning designs.
         </p>
-        <button class="auth-button" onclick="redirectToAuth()">Try it now - It's Free</button>
+        <button class="auth-button" onclick="openGooglePopup()">Try it now - It's Free</button>
     </div>
 
     <footer>
@@ -152,8 +152,44 @@
             backDelay: 1000
         });
 
-        function redirectToAuth() {
-        window.location.href = "/auth";
+        function openGooglePopup() {
+        const popup = window.open(
+            "https://accounts.google.com/o/oauth2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=token&scope=email",
+            "Google Login",
+            "width=500,height=600"
+        );
+
+        const interval = setInterval(() => {
+            try {
+                if (popup.closed) {
+                    clearInterval(interval);
+                    alert("Login window closed.");
+                }
+
+                // Check if the popup URL contains the token
+                if (popup.location.href.includes("access_token")) {
+                    clearInterval(interval);
+
+                    // Extract the token from the URL
+                    const token = new URLSearchParams(
+                        popup.location.hash.substring(1)
+                    ).get("access_token");
+
+                    popup.close();
+
+                    // Redirect to /create
+                    if (token) {
+                        // Save token in localStorage or a cookie if needed
+                        localStorage.setItem("googleToken", token);
+                        window.location.href = "/create";
+                    } else {
+                        alert("Failed to log in. Try again.");
+                    }
+                }
+            } catch (error) {
+                // CORS issues will trigger here; ignore them during the login process
+            }
+        }, 500);
     }
     </script>
 </body>
